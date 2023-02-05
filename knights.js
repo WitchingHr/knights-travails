@@ -92,7 +92,7 @@ function knightMoves(origin, destination) {
 
     // Base case, find "bottom" of nested arrays
     if (!Array.isArray(position[0])) {
-      array.push(position[1]);
+      array.push(position);
       return array;
 
     // Push second element in each sub-array
@@ -113,12 +113,16 @@ function knightMoves(origin, destination) {
   readablePaths.sort((a, b) => a.length < b.length ? -1 : 1)
 
   // Log moves
-  console.log(`Reached destination in ${readablePaths[0].length - 1} move(s)`);
+  if (readablePaths[0].length === 2) {
+    console.log(`Reached destination in ${readablePaths[0].length - 1} move`);
+  } else {
+    console.log(`Reached destination in ${readablePaths[0].length - 1} moves`);
+  }
 
   // Create string of full path
   let string = '';
-  readablePaths[0].forEach(array => {
-    string += `(${array}) `
+  readablePaths[0].forEach(move => {
+    string += `(${move}) `;
   });
 
   // Log shortest path string
