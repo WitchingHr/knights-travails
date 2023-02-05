@@ -1,17 +1,17 @@
-// Creates board
+// Returns array of coordinates
 function coordinates(position = [0, 0], array = []) {
-  // If row is full
   if (position[1] === 7) {
+    // If at end of row
     array.push(position);
 
-    // Base case
+    // Base case, if at end of final row
     if (position[0] === 7) return array;
 
     // Add row
     return coordinates([(position[0] + 1), 0], array);
-  } else {
 
-    // Fill row
+  } else {
+    // Add square to row
     array.push(position);
     return coordinates([position[0], (position[1] + 1)], array);
   }
@@ -20,10 +20,12 @@ function coordinates(position = [0, 0], array = []) {
 // Get array of all coordinates
 const board = coordinates();
 
-// Main knight function
+// Main function, returns shortest path with amount of moves
 function knightMoves(origin, destination) {
 
+  // Returns all possible moves from given position
   function possibleMoves(position) {
+
     // All possible knight moves
     const knight = [
       [2, 1], [1, 2], [-1, 2], [-2, 1],
@@ -33,6 +35,7 @@ function knightMoves(origin, destination) {
     // Possible moves
     const possible = [];
 
+    // Stringify board for comparison
     const coordinateString = JSON.stringify(board);
 
     knight.forEach((move) => {
@@ -59,13 +62,11 @@ function knightMoves(origin, destination) {
   let visited = [];
 
   while (queue.length > 0) {
-    // Set position and path
+    // Set position and path to first in queue coordinate
     let [position, path] = queue.shift();
 
-    // If position is destination
+    // If position is destination, add path to paths array
     if (position[0] === destination[0] && position[1] === destination[1]) {
-
-      // Add path to paths
       paths.push(path);
     }
 
@@ -73,16 +74,14 @@ function knightMoves(origin, destination) {
     visited.push(position);
     const visitedStr = JSON.stringify(visited);
 
-    // Get next moves
+    // Get next possible moves
     const moves = [...possibleMoves(position)]
 
+    // If square not was previously visited, queue move and add to path
     for (const move of moves) {
+      // Stringify for comparison
       const moveStr = JSON.stringify(move);
-
-      // If haven't square hasn't been visited
       if (!visitedStr.includes(moveStr)) {
-
-        // Add move to queue and path
         queue.push([move, [path, move]]);
       }
     }
@@ -91,11 +90,12 @@ function knightMoves(origin, destination) {
   // Converts nested arrays into a single array
   function reformatPaths(path, position = path, array = []) {
 
-    // Base case
+    // Base case, find "bottom" of nested arrays
     if (!Array.isArray(position[0])) {
       array.push(position[1]);
       return array;
 
+    // Push second element in each sub-array
     } else {
       reformatPaths(path, position[0], array);
       array.push(position[1]);
